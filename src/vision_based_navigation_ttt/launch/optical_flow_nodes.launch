@@ -1,0 +1,5 @@
+<launch>
+    <node name="optical_flow" pkg="vision_based_navigation_ttt" type="optical_flow.py"/>
+    <node name="tau_computation" pkg="vision_based_navigation_ttt" type="tau_computation.py"/>
+    <node name="controller" pkg="vision_based_navigation_ttt" type="controller.py" output = "screen"/>
+</launch>
