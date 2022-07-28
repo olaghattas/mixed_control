@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+
+<launch>
+        <!-- overwriting these args -->
+        <arg name="debug" default="false" />
+        <arg name="gui" default="true" />
+        <arg name="pause" default="false" />
+        <arg name="world" default="$(find optical_fiducial_combined)/worlds/straight_corridor.world" />
+        <arg name="extra_gazebo_args" default="--verbose"/>
+
+        <!-- include gazebo_ros launcher -->
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+                <arg name="world_name" value="$(arg world)" />
+                <arg name="debug" value="$(arg debug)" />
+                <arg name="gui" value="$(arg gui)" />
+                <arg name="paused" value="$(arg pause)" />
+                <arg name="use_sim_time" value="true" />
+                <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+        </include>
+
+        <!-- Configuration of Jackal which you would like to simulate.
+        See jackal_description for details. -->
+        
+         <!-- Spawn Jackal-->
+        <include file="$(find optical_fiducial_combined)/launch/spawn_jackal.launch">
+                <arg name="x" value="0" />
+                <arg name="y" value="0" />
+                <arg name="z" value="1.0" />
+                <arg name="yaw" value="1.5" />
+        </include> 
+       
+        <!-- add parameters for pid controller-->
+        <param name="gain/kp" type="double" value="0.2" />
+        <param name="gain/ki" type="double" value="0.03" />
+        <param name="gain/kd" type="double" value="0.01" />
+                        
+        
+
+        <!--<node name="ap_tag" pkg="optical_fiducial_combined" type="detec.py" output="screen"/> -->
+        <node name="image_proc" pkg="image_proc" type="image_proc" ns="realsense/color"/>
+        
+        <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
+                <arg name="camera_frame" value="front_realsense_gazebo"/>   
+        </include>
+        
+</launch>       
+
+

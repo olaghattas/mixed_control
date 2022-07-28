@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+
+<launch>
+        <!-- overwriting these args -->
+        <arg name="debug" default="false" />
+        <arg name="gui" default="true" />
+        <arg name="pause" default="false" />
+        <arg name="world" default="$(find output_feedback_controller)/worlds/fidu_2.world" />
+        <arg name="extra_gazebo_args" default="--verbose"/>
+
+        <!-- include gazebo_ros launcher -->
+        <include file="$(find gazebo_ros)/launch/empty_world.launch">
+                <arg name="world_name" value="$(arg world)" />
+                <arg name="debug" value="$(arg debug)" />
+                <arg name="gui" value="$(arg gui)" />
+                <arg name="paused" value="$(arg pause)" />
+                <arg name="use_sim_time" value="true" />
+                <arg name="extra_gazebo_args" value="$(arg extra_gazebo_args)"/>
+        </include>
+
+        <!-- Configuration of Jackal which you would like to simulate.
+        See jackal_description for details. -->
+        
+         <!-- Spawn Jackal-->
+        <include file="$(find control_mixer)/launch/spawn_jackal.launch">
+                <arg name="x" value="-7" />
+                <arg name="y" value="-8" />
+                <arg name="z" value="1.0" />
+                <arg name="yaw" value="1.5" />
+        </include> 
+       
+        <node name="image_proc" pkg="image_proc" type="image_proc" ns="realsense/color"/>
+        
+        <include file="$(find apriltag_ros)/launch/continuous_detection.launch">
+                <arg name="camera_frame" value="front_realsense_gazebo"/>   
+        </include>
+
+        <node name="optical_flow" pkg="vision_based_navigation_ttt" type="optical_flow.py"/>
+        <node name="tau_computation" pkg="vision_based_navigation_ttt" type="tau_computation.py"/>
+
+        <node name="controller" pkg="vision_based_navigation_ttt" type="controller.py" output = "screen">
+            <remap from = "/jackal_velocity_controller/cmd_vel" to ="/cmd_vel_opticalflow"/>
+        </node>
+
+        <node name="input_sparse_computation" pkg="output_feedback_controller" type="input_sparse_computation.py" output = "screen">
+            <remap from = "/cmd_vel" to ="/cmd_vel_feedbackcontrol"/>
+        </node>
+
+        
+</launch>       
+
+

@@ -1,0 +1,49 @@
+<?xml version="1.0" ?>
+
+<sdf version="1.5">
+	<world name="apriltag">
+		<!-- A global light source -->
+		<include>
+			<uri>model://sun</uri>
+		</include>
+		
+		<!--Additional light-->
+
+		<light type="point" name="point_light_1">
+			<pose>0 0 1 0 0 0</pose>
+			<diffuse>127 127 127 255</diffuse>
+			<specular>25 25 25 255</specular>
+			<attentuation>
+				<range>20</range>
+				<constant>0.5</constant>
+				<linear>0.01</linear>
+				<quadratic>0</quadratic>
+			</attentuation>
+		</light>
+
+		<!-- A ground plane -->
+		<include>
+			<uri>model://floor</uri>
+		</include>
+
+		<!-- adding apriltag to the world 
+		<include>
+
+			<uri>model://apriltag_1</uri>
+		</include>-->
+		<include>
+			<uri>model://apriltag_4</uri>
+		</include>
+
+		<include>
+			<uri>model://apriltag_3</uri>
+		</include>
+		<!-- boxes as obsacles-->
+		<include>
+			<uri>model://apriltag_2</uri>
+		</include>
+
+		
+	</world>
+</sdf>
+
